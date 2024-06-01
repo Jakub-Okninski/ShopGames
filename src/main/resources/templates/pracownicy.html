@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" \>
+<head>
+    <meta charset="UTF-8">
+    <title>Games Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+<div th:replace="fragments/nav.html :: nav"></div>
+
+
+
+
+<main id="pracownicy">
+
+
+
+    <form th:class="pracownikKontener" th:action="@{/registerEmployee}" th:method="POST" th:object="${user}" class="register-form">
+        <h3>Zarejestruj Pracownika</h3>
+
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{enabled}" />
+
+        <div class="rejestracjaform">
+            <div class="register-form-input">name:   <input type="text" th:field="*{name}"/></div>
+            <p th:if="${#fields.hasErrors('name')}" th:each="err : ${#fields.errors('name')}" th:text="${err}"></p>
+
+            <div class="register-form-input">lastname:   <input type="text" th:field="*{lastname}"/></div>
+            <p th:if="${#fields.hasErrors('lastname')}" th:each="err : ${#fields.errors('lastname')}" th:text="${err}"></p>
+
+            <div class="register-form-input">email:  <input type="text" th:field="*{email}" /></div>
+            <p th:if="${#fields.hasErrors('email')}" th:each="err : ${#fields.errors('email')}" th:text="${err}"></p>
+
+            <div class="register-form-input">adres:  <input type="text" th:field="*{adresZamieszkania}" /></div>
+            <p th:if="${#fields.hasErrors('adresZamieszkania')}" th:each="err : ${#fields.errors('adresZamieszkania')}" th:text="${err}"></p>
+
+            <div class="register-form-input">username:  <input type="text" th:field="*{username}" /></div>
+            <p th:if="${#fields.hasErrors('username')}" th:each="err : ${#fields.errors('username')}" th:text="${err}"></p>
+
+            <div class="register-form-input">password:  <input type="text" th:field="*{password}" /></div>
+            <div class="register-form-input">passwordConfirm:  <input type="text" th:field="*{passwordConfirm}" /></div>
+            <p th:if="${#fields.hasErrors('password')}" th:each="err : ${#fields.errors('password')}" th:text="${err}"></p>
+
+
+        </div>
+        <input type="submit" value="Zarejestruj" />
+    </form>
+
+
+
+    <div class="pracownikKontener">
+        <h3>Lista Pracowników</h3>
+        <div  class="pracownikItem" th:each="user : ${pracownicy}" th:object="${user}">
+
+            <div> Imię: <span th:text="${user.username}"></span></div>
+            <div> Nazwisko: <span th:text="${user.lastname}"></span></div>
+
+            <form th:action="@{/deleteEmployee}" th:method="POST">
+                <input type="hidden" name="idEmployee" th:value="${user.getId()}"/>
+                <input type="submit" value="Zwolnij"/>
+            </form>
+
+        </div>
+    </div>
+</main>
+
+
+
+
+
+<div th:replace="fragments/footer.html :: footer"></div>
+
+</body>
+</html>

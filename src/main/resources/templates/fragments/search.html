@@ -1,0 +1,27 @@
+<form id="serach" th:fragment="search(gameFilter)" th:action="@{/serach}" th:method="GET" th:object="${gameFilter}">
+    <script src="script.js"></script>
+    <div id="serachForm">
+        <div><input type="text" id="search-input" placeholder="  Szukaj" th:field="*{title}"/></div>
+        <div id="serachDetails">
+            <div>Cena Od:  <input type="text" th:field="*{priceMin}" /></div>
+            <div>Cena Do:  <input type="text" th:field="*{priceMax}" /></div>
+            <div>Data Od:  <input type="date" th:field="*{dataMin}"/></div>
+            <div>Data Do:  <input type="date" th:field="*{dataMax}"/></div>
+            <div>Gatunek:  <select th:field="*{gameCategory}">
+                    <option th:value="null" th:text="Wszystko" selected></option>
+                    <option th:each="gameCategoryItem : ${gameCategoryList}" th:value="${gameCategoryItem}" th:text="${gameCategoryItem.getName()}"></option>
+                </select>
+            </div>
+            <div>Platforma:  <select th:field="*{gamePlatform}">
+                    <option th:value="null" th:text="Wszystko" selected></option>
+                    <option th:each="gamePlatformItem : ${gamePlatformsList}" th:value="${gamePlatformItem}" th:text="${gamePlatformItem.getName()}"></option>
+                </select>
+            </div>
+            <div>Szukaj w tagach: <input type="checkbox" th:field="*{tagF}" /></div>
+        </div>
+    </div>
+    <div style="display: flex; flex-direction: column">
+        Wiecej<input type="checkbox" id="moreCheckbox" th:field="*{more}" />
+    </div>
+    <input type="submit" value="Szukaj" />
+</form>

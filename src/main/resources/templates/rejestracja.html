@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+
+
+<div class="rejestracja">
+    <h2>Zarejetruj się</h2>
+
+    <form th:action="@{/registerUser}" th:method="POST" th:object="${user}" class="register-form">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{enabled}" />
+
+        <div class="rejestracjaform">
+            <div class="register-form-input">name:   <input type="text" th:field="*{name}"/></div>
+            <p th:if="${#fields.hasErrors('name')}" th:each="err : ${#fields.errors('name')}" th:text="${err}"></p>
+
+            <div class="register-form-input">lastname:   <input type="text" th:field="*{lastname}"/></div>
+            <p th:if="${#fields.hasErrors('lastname')}" th:each="err : ${#fields.errors('lastname')}" th:text="${err}"></p>
+
+            <div class="register-form-input">email:  <input type="text" th:field="*{email}" /></div>
+            <p th:if="${#fields.hasErrors('email')}" th:each="err : ${#fields.errors('email')}" th:text="${err}"></p>
+
+
+            <div class="register-form-input">adres:  <input type="text" th:field="*{adresZamieszkania}" /></div>
+            <p th:if="${#fields.hasErrors('adresZamieszkania')}" th:each="err : ${#fields.errors('adresZamieszkania')}" th:text="${err}"></p>
+
+
+
+            <div class="register-form-input">username:  <input type="text" th:field="*{username}" /></div>
+            <p th:if="${#fields.hasErrors('username')}" th:each="err : ${#fields.errors('username')}" th:text="${err}"></p>
+
+            <div class="register-form-input">password:  <input type="text" th:field="*{password}" /></div>
+            <div class="register-form-input">passwordConfirm:  <input type="text" th:field="*{passwordConfirm}" /></div>
+            <p th:if="${#fields.hasErrors('password')}" th:each="err : ${#fields.errors('password')}" th:text="${err}"></p>
+
+
+
+        </div>
+        <input type="submit" value="Zarejestruj" />
+    </form>
+    <a style="color: white" th:href="@{/}">Strona Główna</a>
+
+
+</div>
+<div th:replace="fragments/footer.html :: footer"></div>
+
+</body>
+</html>

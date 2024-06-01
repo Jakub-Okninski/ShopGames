@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" \>
+<head>
+    <meta charset="UTF-8">
+    <title>Games Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+<div th:replace="fragments/nav.html :: nav"></div>
+<!--<div th:replace="fragments/search.html :: search(${gameFilter})"></div>-->
+
+
+<main class="detailsGame">
+
+
+
+            <div th:object="${game}" class="detailsGame-game">
+                <img  th:src="'data:image;base64,' + ${game.imageString}">
+                <div class="detailsGame-gameInfo">
+                    <h2 th:text="*{title}"></h2>
+                    <div>Opis: <span th:text="*{description}"></span></div>
+                    <div>Dostępność: <span th:text="*{available ? 'Dostępne' : 'Brak na magazynie'}"></span></div>
+                    <div>Premiera: <span th:text="*{premiere}"></span></div>
+                    <div>Kategoria: <span th:text="*{gameCategory.getName()}"></span></div>
+                    <div>Platforma: <span th:text="*{gamePlatform.getName()}"></span> <span th:text="*{{gamePlatform.isDigital()} ? 'klucz' : 'pudełko'}"></span></div>
+                    <div>Tagi: <span th:each="gameTag : *{getGameTag()}"><span th:object="${gameTag}">#<span th:text="*{name}"></span> </span></span></div>
+                    <div>Cena: <span th:text="*{price}"></span>zł</div>
+                    <div>
+
+
+                        <div th:if="${game.quantity<=0}">
+                            <p>Brak Na Magazynie</p>
+                        </div>
+                        <div th:if="${game.quantity>0}">
+                            <form  th:if="${!inMyBasket}" th:action="@{/dodajDoKosza}" th:method="POST" th:object="${basket}">
+                                <input type="hidden" th:field="*{game}"/>
+                                <input type="number" th:field="*{quantity}" min="1"  th:max="${game.quantity}" />
+                                <input type="submit" value="Dodaj do kosza" />
+                            </form>
+                        </div>
+                        <form  th:if="${inMyBasket}" th:action="@{/kosz}" th:method="GET" >
+                            <input type="hidden" name="User" th:value="${#authentication.name}" />
+                            <input type="submit" value="Idż do kosza" />
+                        </form>
+                        <div style="display: flex; margin: 10px;">
+                            <div style="display: flex" sec:authorize="hasRole('SELLER')">
+                                <a class="submit-button"  th:href="@{/editGame(ID=${game.idGame})}">Edytuj</a>
+                                <form th:action="@{/deleteGame}" th:method="POST">
+                                    <input type="hidden" name="ID" th:value="${game.idGame}" />
+                                    <input class="submit-button" type="submit" value="Usuń" />
+                                </form>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <form  th:if="${isMyGame}" th:action="@{/addOpinion}" th:method="POST" th:object="${opinion}">
+                <input type="hidden" name="game.idGame" th:value="${game.idGame}" />
+                <input type="hidden" name="idOpinions" th:value="*{idOpinions}" />
+                <input type="hidden" name="date" th:value="${opinion.date}" />
+                <input type="hidden" name="user" th:value="${opinion.user.id}" />
+
+                <input type="text" id="opinionInput" name="comment" th:value="*{comment}" required/>
+                <p th:if="${#fields.hasErrors('comment')}" th:each="err : ${#fields.errors('comment')}" th:text="${err}"></p>
+                <select th:field="*{stars}">
+                    <option th:each="rating : ${#numbers.sequence(5, 1)}" th:value="${rating}" th:text="${rating}"></option>
+                </select>
+                <p th:if="${#fields.hasErrors('stars')}" th:each="err : ${#fields.errors('stars')}" th:text="${err}"></p>
+
+                <input type="submit" value="Dodaj Opinię" />
+            </form>
+
+
+                <div  th:each="opinion : ${opinions}" class="opinionsList" th:object="${opinion}">
+                    <div class="opinionListItemUser">
+                        <div>Autor: <span th:text="*{getUser().getUsername()}"></span></div>
+                        <div>Ocena: <span th:text="*{stars}">/ 5</span></div>
+                        <div>Data: <span th:text="*{date}">/ 5</span></div>
+                        <div th:if="${opinion.getUser().getUsername() == #authentication.name}">
+                            <a th:href="@{/deleteOpinions(opinionID=${opinion.getIdOpinions()})}">Usuń</a>
+                        </div>
+                        <div th:if="${opinion.getUser().getUsername() != #authentication.name}"></div>
+                    </div>
+                    <div>Treść: <span th:text="*{comment}"> </span></div>
+                </div>
+
+
+
+
+
+</main>
+
+<div th:replace="fragments/footer.html :: footer"></div>
+
+</body>
+</html>

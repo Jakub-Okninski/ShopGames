@@ -1,0 +1,31 @@
+<nav th:fragment="nav" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+    <div class="nameUser" sec:authorize="isAuthenticated()">
+        Witaj, <span sec:authentication="name"/>! <br>
+        Role:  <span  th:each="role: ${#authentication.getAuthorities()}" th:text="${role.authority}"></span>
+    </div>
+
+    <div sec:authorize="isAnonymous()">
+        <a href="/login">Zaloguj</a>
+        <a href="/register">Zarejestruj</a>
+    </div>
+
+    <div sec:authorize="isAuthenticated()" style="display: flex">
+        <div sec:authorize="hasRole('CLIENT')">
+            <a th:href="@{/kosz(User=${#authentication.name})}">Mój kosz</a>
+            <a th:href="@{/myOrders(User=${#authentication.name})}">Moje Zamówienia</a>
+        </div>
+        <div sec:authorize="hasRole('SELLER')">
+            <a th:href="@{/ordersPanel}">Panel Zamówień</a>
+            <a th:href="@{/addGame}">Dodaj Grę</a>
+            <a th:href="@{/addGameCategory}">Dodaj Kategorię</a>
+            <a th:href="@{/addGamePlatform}">Dodaj Platforme</a>
+            <a th:href="@{/addGameTag}">Dodaj Tagi</a>
+        </div>
+        <div sec:authorize="hasRole('BOSS')">
+            <a th:href="@{/pracownicy}">Pracownicy</a>
+        </div>
+        <a href="/logout">Wyloguj</a>
+    </div>
+
+</nav>

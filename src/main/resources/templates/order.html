@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" \>
+<head>
+    <meta charset="UTF-8">
+    <title>Games Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+<div th:replace="fragments/nav.html :: nav"></div>
+<!--<div th:replace="fragments/search.html :: search(${gameFilter})"></div>-->
+
+
+
+
+<main class="order">
+    <h3>Moje Zamówienie: </h3>
+    <div class="orderList" th:each="koszyk : ${kosze}">
+        <div> Tytuł: <span th:text="${koszyk.getGame().getTitle()}"></span></div>
+        <div> Ilość:  <span th:text="${koszyk.getQuantity()}"></span> szt</div>
+        <div> Suma : <span th:text="${koszyk.getQuantity()*koszyk.getGame().getPrice()}"></span> zł</div>
+    </div>
+    <h3>Dane Do Zamówienia: </h3>
+    <form th:action="@{/order}" th:method="GET" th:object="${orderDetails}" >
+        <input type="hidden" th:field="*{idOrderDetails}"/>
+
+        <div>
+            <div> Miasto:   <input type="text" th:field="*{city}"/></div>
+            <p th:if="${#fields.hasErrors('city')}" th:each="err : ${#fields.errors('city')}" th:text="${err}"></p>
+
+            <div> Kod pocztowy:   <input type="text" th:field="*{zipCode}"/></div>
+            <p th:if="${#fields.hasErrors('zipCode')}" th:each="err : ${#fields.errors('zipCode')}" th:text="${err}"></p>
+
+            <div> Ulica:  <input type="text" th:field="*{street}" /></div>
+            <p th:if="${#fields.hasErrors('street')}" th:each="err : ${#fields.errors('street')}" th:text="${err}"></p>
+
+            <div> Numer domu:   <input type="text" th:field="*{houseNumber}"/></div>
+            <p th:if="${#fields.hasErrors('houseNumber')}" th:each="err : ${#fields.errors('houseNumber')}" th:text="${err}"></p>
+
+        </div>
+        <div>
+            <div> Nr telefonu: <input type="text" th:field="*{number}" /></div>
+            <p th:if="${#fields.hasErrors('number')}" th:each="err : ${#fields.errors('number')}" th:text="${err}"></p>
+
+            <div> E-mail: <input type="text" th:field="*{adressEmail}"/></div>
+            <p th:if="${#fields.hasErrors('adressEmail')}" th:each="err : ${#fields.errors('adressEmail')}" th:text="${err}"></p>
+
+            Płatność:<select name="idPaymentTypes">
+            <option th:each="paymentType : ${PaymentTypes}" th:value="${paymentType.getIdPaymentTypes()}" th:text="${paymentType.getType().name()}"></option>
+        </select>
+
+        </div>
+
+
+        <div>
+            <input type="submit" value="Zamawiam" />
+        </div>
+    </form>
+</main>
+
+
+
+
+
+    <div th:replace="fragments/footer.html :: footer"></div>
+
+</body>
+</html>
